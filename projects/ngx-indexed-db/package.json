@@ -1,6 +1,6 @@
 {
-  "name": "ngx-indexed-db",
-  "author": "Charles Assunção",
+  "name": "@smit.advenix/ngx-indexed-db",
+  "author": "Smit Joshi",
   "description": "Angular wrapper to IndexedDB database.",
   "version": "22.1.0",
   "license": "ISC",

@@ -1,5 +1,5 @@
 {
-  "name": "ngx-indexed-db",
+  "name": "@smit.advenix/ngx-indexed-db",
   "version": "22.1.0",
   "files": [
     "dist/ngx-indexed-db/**/*"
