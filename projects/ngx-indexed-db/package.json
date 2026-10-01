@@ -2,7 +2,7 @@
   "name": "ngx-indexed-db",
   "author": "Charles Assunção",
   "description": "Angular wrapper to IndexedDB database.",
-  "version": "22.0.0",
+  "version": "22.1.0",
   "license": "ISC",
   "private": false,
   "keywords": [
