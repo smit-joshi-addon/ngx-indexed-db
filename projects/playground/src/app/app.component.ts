@@ -1,19 +1,20 @@
 import { DBMode, NgxIndexedDBService } from 'ngx-indexed-db';
 import { forkJoin, of, throwError } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   imports: [FormsModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   title = 'playground';
-  storeName: string;
-  storneNameToDelete: string;
+  storeName!: string;
+  storneNameToDelete!: string;
   getAll$;
 
   readonly #dbService = inject(NgxIndexedDBService);
@@ -28,7 +29,7 @@ export class AppComponent {
       name: `charles number ${Math.random() * 10}`,
     };
     if (Math.random().toFixed(0) === '1') {
-      randomPerson['email'] = `email number ${Math.random() * 10}`;
+      randomPerson['email' as keyof typeof randomPerson] = `email number ${Math.random() * 10}`;
     }
 
     this.#dbService.add('people', randomPerson).subscribe((result) => {

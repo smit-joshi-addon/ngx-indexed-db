@@ -19,8 +19,8 @@ import {
 
 @Injectable()
 export class NgxIndexedDBService {
-  private defaultDatabaseName?: string = null;
-  private selectedDb: string;
+  private defaultDatabaseName?: string;
+  private selectedDb!: string;
 
   constructor(
     @Inject(CONFIG_TOKEN) private dbConfigs: Record<string, DBConfig>,
@@ -33,9 +33,9 @@ export class NgxIndexedDBService {
     if (!dbConfig.name) {
       throw new Error('NgxIndexedDB: Please, provide the dbName in the configuration');
     }
-    // if (!dbConfig.version) {
-    //   throw new Error('NgxIndexedDB: Please, provide the db version in the configuration');
-    // }
+    if (!dbConfig.version) {
+      throw new Error('NgxIndexedDB: Please, provide the db version in the configuration');
+    }
     if ((dbConfig.isDefault ?? false) && this.defaultDatabaseName) {
       // A default DB is already configured, throw an error
       throw new Error('NgxIndexedDB: Only one database can be set as default');
@@ -48,7 +48,7 @@ export class NgxIndexedDBService {
     await CreateObjectStore(
       this.indexedDB,
       dbConfig.name,
-      dbConfig.version,
+      dbConfig.version!,
       dbConfig.objectStoresMeta,
       dbConfig.migrationFactory
     );
@@ -122,7 +122,7 @@ export class NgxIndexedDBService {
     await CreateObjectStore(
       this.indexedDB,
       this.dbConfig.name,
-      ++this.dbConfig.version,
+      ++this.dbConfig.version!,
       storeSchemas,
       migrationFactory
     );
@@ -138,7 +138,7 @@ export class NgxIndexedDBService {
     migrationFactory?: () => { [key: number]: (db: IDBDatabase, transaction: IDBTransaction) => void }
   ): Promise<void> {
     const storeSchemas: ObjectStoreMeta[] = [storeSchema];
-    await CreateObjectStore(this.indexedDB, this.dbConfig.name, this.dbConfig.version, storeSchemas, migrationFactory);
+    await CreateObjectStore(this.indexedDB, this.dbConfig.name, this.dbConfig.version!, storeSchemas, migrationFactory);
   }
 
   /**
@@ -355,8 +355,8 @@ export class NgxIndexedDBService {
             obs.error(evt);
           };
 
-          request.onsuccess = ({ target: { result: ResultAll } }: RequestEvent<T>) => {
-            obs.next(ResultAll as T[]);
+          request.onsuccess = (event: Event) => {
+            obs.next((event.target as IDBRequest<T[]>).result);
             obs.complete();
           };
         })
@@ -818,7 +818,7 @@ export class NgxIndexedDBService {
    * @param storeName The name of the store to query
    */
   deleteObjectStore(storeName: string): Observable<void> {
-    return DeleteObjectStore(this.dbConfig.name, ++this.dbConfig.version, storeName);
+    return DeleteObjectStore(this.dbConfig.name, ++this.dbConfig.version!, storeName);
   }
 
   /**
